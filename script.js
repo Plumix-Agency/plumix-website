@@ -36,8 +36,8 @@ processSteps.forEach((step, i) => {
   step.style.transitionDelay = (i * 0.1) + 's';
 });
 
-/* ── FORM SUBMIT ── */
-function submitForm() {
+/* ── FORM SUBMIT (REST API) ── */
+async function submitForm() {
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
   const biz = document.getElementById('f-biz').value.trim();
@@ -49,9 +49,41 @@ function submitForm() {
     return;
   }
 
-  const msg = `Hi Plumix! 👋\n\n*Name:* ${name}\n*Business:* ${biz || 'N/A'}\n*Service:* ${service || 'Not specified'}\n*Details:* ${details || 'N/A'}`;
-  const waUrl = `https://wa.me/923454105434?text=${encodeURIComponent(msg)}`;
-  window.open(waUrl, '_blank');
+  const payload = {
+    Name: name,
+    BusinessName: biz || "N/A",
+    EmailAddress: "", // add field if you have email input
+    Phone_WhatsApp: phone,
+    ServiceNeeded: service || "Not specified",
+    ProjectDetails: details || "N/A"
+  };
+
+  try {
+    const res = await fetch("https://plumix.qzz.io/form-submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": "plumix-O8Pl90opQDm1FiLoQM7u5bnR9z9RY43MByShvCQ8t7V4zN9LI7"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      throw new Error(`Request failed: ${res.status}`);
+    }
+
+    const data = await res.json().catch(() => ({}));
+
+    alert("Form submitted successfully! 🚀");
+    console.log("Server response:", data);
+
+    // optional: reset form
+    document.querySelector("form").reset();
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit form. Please try again.");
+  }
 }
 
 /* ── NAV SCROLL SHADOW ── */
