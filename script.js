@@ -59,7 +59,7 @@ async function submitForm() {
   };
 
   try {
-    const res = await fetch("https://plumix.qzz.io/form-submit", {
+    const res = await fetch("https://n8n.conversoempire.world/webhook/plumix-contact-form", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
