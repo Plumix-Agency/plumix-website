@@ -1,7 +1,9 @@
 /* ── MOBILE MENU ── */
 function toggleMenu() {
   const menu = document.getElementById('mobile-menu');
+  const hamburger = document.getElementById('hamburger');
   menu.classList.toggle('open');
+  hamburger.classList.toggle('active');
 }
 
 /* ── FAQ ACCORDION ── */
@@ -19,7 +21,7 @@ const revealObserver = new IntersectionObserver((entries) => {
     if (entry.isIntersecting) {
       setTimeout(() => {
         entry.target.classList.add('visible');
-      }, 60);
+      }, 40);
       revealObserver.unobserve(entry.target);
     }
   });
@@ -40,19 +42,26 @@ processSteps.forEach((step, i) => {
 async function submitForm() {
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
+  const email = document.getElementById('f-email').value.trim();
   const biz = document.getElementById('f-biz').value.trim();
   const service = document.getElementById('f-service').value;
   const details = document.getElementById('f-details').value.trim();
+  const submitBtn = document.querySelector('.form-submit');
 
   if (!name || !phone) {
     alert('Please enter your name and phone number.');
     return;
   }
 
+  // Disable submit button during submission
+  submitBtn.disabled = true;
+  const originalText = submitBtn.textContent;
+  submitBtn.textContent = 'Sending...';
+
   const payload = {
     Name: name,
     BusinessName: biz || "N/A",
-    EmailAddress: "", // add field if you have email input
+    EmailAddress: email || "N/A",
     Phone_WhatsApp: phone,
     ServiceNeeded: service || "Not specified",
     ProjectDetails: details || "N/A"
@@ -77,12 +86,15 @@ async function submitForm() {
     alert("Form submitted successfully! 🚀");
     console.log("Server response:", data);
 
-    // optional: reset form
+    // Reset form
     document.querySelector("form").reset();
 
   } catch (err) {
     console.error(err);
     alert("Failed to submit form. Please try again.");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
   }
 }
 
@@ -90,7 +102,7 @@ async function submitForm() {
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('main-nav');
   if (window.scrollY > 10) {
-    nav.style.boxShadow = '0 1px 24px rgba(0,0,0,0.07)';
+    nav.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)';
   } else {
     nav.style.boxShadow = 'none';
   }
